@@ -38,10 +38,6 @@ class Ingredient(models.Model):
         unique=True,
         db_index=True
     )
-    amount = models.IntegerField(
-        'Количество',
-        validators=[validate_amount]
-    )
     measurement_unit = models.CharField(
         'Единица измерения',
         max_length=15,
@@ -70,6 +66,11 @@ class Recipe(models.Model):
         Tag,
         verbose_name='Теги'
     )
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        through='RecipeIngredientAmount',
+        verbose_name='Ингредиенты'
+    )
     text = models.TextField(
         'Описание'
     )
@@ -89,6 +90,24 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class RecipeIngredientAmount(models.Model):
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE
+    )
+    amount = models.IntegerField(
+        'Количество',
+        validators=[validate_amount]
+    )
+
+    def __str__(self):
+        return f'{self.ingredient}, {self.recipe}'
 
 
 # class ShoppingCart(models.Model):
