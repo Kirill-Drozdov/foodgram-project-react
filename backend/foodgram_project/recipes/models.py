@@ -80,7 +80,7 @@ class Recipe(models.Model):
     )
     image = models.ImageField(
         'Картинка',
-        null=True,
+        upload_to='recipes',
         blank=True
     )
 
