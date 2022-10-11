@@ -82,6 +82,14 @@ class Recipe(models.Model):
         upload_to='recipes',
         blank=True
     )
+    is_favorited = models.BooleanField(
+        'В избранном',
+        default=False
+    )
+    is_in_shopping_cart = models.BooleanField(
+        'В списке покупок',
+        default=False
+    )
 
     class Meta:
         verbose_name = 'Рецепт'
@@ -113,5 +121,29 @@ class RecipeIngredientAmount(models.Model):
 #     pass
 
 
-# class Favorite(models.Model):
-#     pass
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='favorites',
+        verbose_name='Пользователь'
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='favorites',
+        verbose_name='Рецепт'
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_favorite_model'
+            )
+        ]
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
+
+    def __str__(self):
+        return f'{self.user} {self.recipe}'
