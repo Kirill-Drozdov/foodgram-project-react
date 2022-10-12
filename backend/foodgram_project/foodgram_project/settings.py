@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'recipes.apps.RecipesConfig',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +75,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'users.User'
+# AUTHENTICATION_BACKENDS = (
+#     'foodgram_project.users.backends.CaseInsensitiveModelBackend', )
 
 LANGUAGE_CODE = 'ru-ru'
 
