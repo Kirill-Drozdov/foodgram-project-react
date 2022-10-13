@@ -76,8 +76,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = 'users.User'
-# AUTHENTICATION_BACKENDS = (
-#     'foodgram_project.users.backends.CaseInsensitiveModelBackend', )
+AUTHENTICATION_BACKENDS = (
+    'users.backends.CaseInsensitiveModelBackend', )
 
 LANGUAGE_CODE = 'ru-ru'
 

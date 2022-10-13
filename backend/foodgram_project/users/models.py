@@ -10,6 +10,7 @@ from recipes.validators import (validate_forbidden_username,
 
 class User(AbstractUser):
     # Переопределяем стандартные поля модели AbstractUser
+    # Все поля должны быть обязательными для заполнения
     username = models.CharField(
         gettext_lazy('username'),
         max_length=150,
@@ -26,7 +27,9 @@ class User(AbstractUser):
     )
     email = models.EmailField(
         gettext_lazy('email address'),
-        blank=False, null=False, unique=True,
+        blank=False,
+        null=False,
+        unique=True,
         validators=[validate_unique_case_insensitive_email],
         error_messages={
             'unique':
@@ -44,8 +47,28 @@ class User(AbstractUser):
         max_length=150,
         blank=False
     )
-    # confirmation_code = models.CharField(
-    #     'Код подтверждения',
-    #     max_length=128,
-    #     null=True,
-    #     blank=True)
+
+
+class Follow(models.Model):
+    user = models.ForeignKey(
+        User,
+        verbose_name='Пользователь',
+        on_delete=models.CASCADE,
+        related_name='following'
+    )
+    subscriber = models.ForeignKey(
+        User,
+        verbose_name='Подписчик',
+        on_delete=models.CASCADE,
+        related_name='subscriber'
+    )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'subscriber'),
+                name='unique_follow_model'
+            )
+        ]
+        verbose_name = 'Подписка на автора'
+        verbose_name_plural = 'Подписки на авторов'
