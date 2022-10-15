@@ -9,8 +9,6 @@ from recipes.validators import (validate_forbidden_username,
 
 
 class User(AbstractUser):
-    # Переопределяем стандартные поля модели AbstractUser
-    # Все поля должны быть обязательными для заполнения
     username = models.CharField(
         gettext_lazy('username'),
         max_length=150,

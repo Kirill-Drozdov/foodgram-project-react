@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.filters import SearchFilter
+# from rest_framework.filters import SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -13,9 +13,9 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
     # permission_classes = (IsAdminOnlyPermission,)
-    lookup_field = 'username'
-    filter_backends = (SearchFilter,)
-    search_fields = ('username',)
+    # lookup_field = 'username'
+    # filter_backends = (SearchFilter,)
+    # search_fields = ('username',)
 
     @action(methods=('GET', 'PATCH'), detail=False, url_path='me',
             permission_classes=(IsAuthenticated,))
