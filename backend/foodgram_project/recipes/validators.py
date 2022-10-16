@@ -45,3 +45,21 @@ def validate_unique_case_insensitive_email(value):
         msg = 'Пользователь с таким адресом электронной почты уже существует.'
         raise ValidationError(msg)
     return value
+
+
+def validate_unique_case_insensitive_first_name(value):
+    """Независимо от регистра проверяет, что first_name пользователя уникален."""
+    user_model = get_user_model()
+    if user_model.objects.filter(first_name__iexact=value).exists():
+        msg = 'Пользователь с таким именем уже существует.'
+        raise ValidationError(msg)
+    return value
+
+
+def validate_unique_case_insensitive_last_name(value):
+    """Независимо от регистра проверяет, что last_name пользователя уникален."""
+    user_model = get_user_model()
+    if user_model.objects.filter(last_name__iexact=value).exists():
+        msg = 'Пользователь с такой фамилией уже существует.'
+        raise ValidationError(msg)
+    return value

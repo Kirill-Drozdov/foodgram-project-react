@@ -114,11 +114,12 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 6,
 }
 
-# SIMPLE_JWT = {
-#     # Устанавливаем срок жизни токена
-#     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
-#     'AUTH_HEADER_TYPES': ('Bearer',),
-# }
+DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'SERIALIZERS': {
+        'user_create': 'api_foodgram.serializers.auth.CustomUserSerializer',
+    }
+}
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
