@@ -45,6 +45,7 @@ class User(AbstractUser):
         max_length=150,
         blank=False
     )
+    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
 
 class Follow(models.Model):

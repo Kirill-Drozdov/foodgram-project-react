@@ -18,8 +18,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'djoser',
-    'rest_framework_simplejwt',
+    # 'rest_framework_simplejwt',
     'django_filters',
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
@@ -100,11 +101,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAUL_FILTERS_BACKEND': [
         'django_filters.rest_framework.DjangoFilterBackend'
@@ -113,8 +114,11 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 6,
 }
 
-SIMPLE_JWT = {
-    # Устанавливаем срок жизни токена
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_HEADER_TYPES': ('Bearer',),
-}
+# SIMPLE_JWT = {
+#     # Устанавливаем срок жизни токена
+#     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
+#     'AUTH_HEADER_TYPES': ('Bearer',),
+# }
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

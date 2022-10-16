@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from api_foodgram.views import recipes, users
+from api_foodgram.views import recipes
 
 app_name = 'api_foodgram'
 
@@ -17,8 +17,10 @@ router.register(
 urlpatterns = [
     # path('v1/auth/signup/', SignUpViewSet.as_view()),
     # path('v1/auth/token/', TokenViewSet.as_view()),
-    path('', include('djoser.urls')),
-    path('', include('djoser.urls.jwt')),
+    # path('', include('djoser.urls')),
+    # path('', include('djoser.urls.jwt')),
+    # path(r'auth/', include('djoser.urls')),
+    path('', include("djoser.urls.base")),
+    path('', include("djoser.urls.authtoken")),
     path('', include(router.urls)),
-    # JWT-эндпоинты, для управления JWT-токенами:
 ]
