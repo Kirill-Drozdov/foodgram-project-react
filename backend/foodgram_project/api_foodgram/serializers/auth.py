@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
-# from rest_framework import serializers
-from djoser.serializers import UserCreateSerializer
+from rest_framework import serializers
+from djoser.serializers import UserCreateSerializer, UserSerializer
 from djoser.conf import settings
 
 # from recipes.validators import (
@@ -15,7 +15,7 @@ from djoser.conf import settings
 User = get_user_model()
 
 
-class CustomUserSerializer(UserCreateSerializer):
+class CustomUserCreateSerializer(UserCreateSerializer):
     class Meta:
         model = User
         fields = tuple(User.REQUIRED_FIELDS) + (
@@ -24,3 +24,19 @@ class CustomUserSerializer(UserCreateSerializer):
             'password',
             'username'
         )
+
+
+class CustomUserSerializer(UserSerializer):
+    is_subscribed = serializers.BooleanField(
+        default=False
+    )
+
+    class Meta:
+        model = User
+        fields = tuple(User.REQUIRED_FIELDS) + (
+            settings.USER_ID_FIELD,
+            settings.LOGIN_FIELD,
+            'username',
+            'is_subscribed'
+        )
+        read_only_fields = (settings.LOGIN_FIELD,)
