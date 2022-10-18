@@ -1,32 +1,41 @@
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
-from rest_framework import status, viewsets
-from rest_framework.decorators import action
-# from rest_framework.filters import SearchFilter
-from rest_framework.permissions import IsAuthenticated
+from rest_framework import viewsets, status, mixins
 from rest_framework.response import Response
 
-# from api.permissions import IsAdminOnlyPermission
-from api_foodgram.serializers.users import UserSerializer, UserMeSerializer
+from api_foodgram.serializers.users import FollowSerializer
+from foodgram_project.users.models import Follow
+
+User = get_user_model()
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = get_user_model().objects.all()
-    serializer_class = UserSerializer
-    # permission_classes = (IsAdminOnlyPermission,)
-    # lookup_field = 'username'
-    # filter_backends = (SearchFilter,)
-    # search_fields = ('username',)
+class CreateDeleteViewSet(
+        mixins.CreateModelMixin,
+        mixins.DestroyModelMixin,
+        viewsets.GenericViewSet):
+    pass
 
-    @action(methods=('GET', 'PATCH'), detail=False, url_path='me',
-            permission_classes=(IsAuthenticated,))
-    def get_me(self, request):
-        if request.method == 'PATCH':
-            serializer = UserMeSerializer(request.user, data=request.data,
-                                          partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
+
+class FollowViewSet(CreateDeleteViewSet):
+    """Подписка/отписка на автора."""
+    serializer_class = FollowSerializer
+    # filter_backends = (filters.SearchFilter,)
+    # filterset_fields = ('following',)
+    # search_fields = ('=following__username',)
+
+    def get_queryset(self):
+        user = self.request.user
+        new_queryset = Follow.objects.filter(user=user)
+        return new_queryset
+
+    def perform_create(self, serializer):
+        user_id = self.kwargs.get('user_id')
+        subscriber = get_object_or_404(User, pk=user_id)
+        user = self.request.user
+        if serializer.is_valid():
+            serializer.save(
+                user=user,
+                subscriber=subscriber)
+        else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
-        serializer = UserMeSerializer(request.user)
-        return Response(serializer.data, status=status.HTTP_200_OK)

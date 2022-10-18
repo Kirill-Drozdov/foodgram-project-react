@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 
-from api_foodgram.views import recipes
+from api_foodgram.views import recipes, users
 
 app_name = 'api_foodgram'
 
@@ -11,6 +11,11 @@ router.register(
     'ingredients',
     recipes.IngredientViewSet,
     basename='ingredients'
+)
+router.register(
+    r'users/(?P<user_id>\d+)/subscribe',
+    users.FollowViewSet,
+    basename='follow'
 )
 # router.register('users', users.UserViewSet, basename='users')
 
