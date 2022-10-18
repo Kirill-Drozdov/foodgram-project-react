@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from foodgram_project.users.models import Follow
+from users.models import Follow
 
 User = get_user_model()
 
@@ -14,16 +14,17 @@ class FollowSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault()
     )
     subscriber = serializers.SlugRelatedField(
-        required=True,
+        read_only=True,
         slug_field='username',
-        queryset=User.objects.all()
+        default=None
+        # queryset=User.objects.all()
     )
 
     def validate(self, data):
-        if self.context['request'].user == data['subscriber']:
-            raise serializers.ValidationError(
-                'Подписываться на самого себя нельзя!'
-            )
+        # if self.context['request'].user == data['subscriber']:
+        #     raise serializers.ValidationError(
+        #         'Подписываться на самого себя нельзя!'
+        #     )
         return data
 
     class Meta:
