@@ -45,6 +45,10 @@ class User(AbstractUser):
         max_length=150,
         blank=False
     )
+    is_subscribed = models.BooleanField(
+        'Подписан',
+        default=False
+    )
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
