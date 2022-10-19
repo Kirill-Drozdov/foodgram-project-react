@@ -3,17 +3,32 @@ from django.contrib.auth import get_user_model
 from rest_framework import viewsets, status, mixins, generics
 from rest_framework.response import Response
 
-from api_foodgram.serializers.users import FollowSerializer
+from api_foodgram.serializers.users import (
+    FollowSerializer,
+    SubscribtionsSerializer)
 from users.models import Follow
 
 User = get_user_model()
 
 
-class CreateDeleteViewSet(
-        mixins.CreateModelMixin,
-        mixins.DestroyModelMixin,
+class SubscribtionsListViewSet(
+        mixins.ListModelMixin,
         viewsets.GenericViewSet):
-    pass
+    serializer_class = SubscribtionsSerializer
+    # queryset = User.objects.all()
+
+    def get_queryset(self):
+        subscriber = User.objects.get(
+            pk=self.request.user.pk
+        )
+        follow_model = Follow.objects.filter(subscriber=subscriber)
+        new_queryset = []
+        for obj in follow_model:
+            user = User.objects.get(
+                pk=obj.user.pk
+            )
+            new_queryset.append(user)
+        return new_queryset
 
 
 class FollowAPIView(generics.CreateAPIView,

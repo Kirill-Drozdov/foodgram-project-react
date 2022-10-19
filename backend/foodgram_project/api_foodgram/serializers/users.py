@@ -6,6 +6,27 @@ from users.models import Follow
 User = get_user_model()
 
 
+class SubscribtionsSerializer(serializers.ModelSerializer):
+    is_subscribed = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'is_subscribed',
+        )
+
+    def get_is_subscribed(self, obj):
+        subscriber = self.context['request'].user
+        user = obj
+        if Follow.objects.filter(user=user, subscriber=subscriber):
+            return True
+
+
 class FollowSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(
         read_only=True,
@@ -17,13 +38,6 @@ class FollowSerializer(serializers.ModelSerializer):
     last_name = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
     is_subscribed = serializers.SerializerMethodField()
-    # is_subscribed = serializers.BooleanField(default=False)
-    # subscriber = serializers.SlugRelatedField(
-    #     read_only=True,
-    #     slug_field='username',
-    #     default=None
-    #     # queryset=User.objects.all()
-    # )
 
     def validate(self, data):
         pk = self.context.get('view').kwargs.get('pk')
@@ -41,8 +55,6 @@ class FollowSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Вы уже подписаны на этого пользователя!'
             )
-        # else:
-        #     self.is_subscribed = True
         return data
 
     class Meta:

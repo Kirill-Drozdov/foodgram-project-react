@@ -12,6 +12,11 @@ router.register(
     recipes.IngredientViewSet,
     basename='ingredients'
 )
+router.register(
+    'users/subscribtions',
+    users.SubscribtionsListViewSet,
+    basename='subscribtions'
+)
 # router.register(
 #     r'users/(?P<user_id>\d+)/subscribe',
 #     users.FollowViewSet,
