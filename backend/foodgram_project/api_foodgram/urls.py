@@ -13,16 +13,15 @@ router.register(
     basename='ingredients'
 )
 router.register(
+    'recipes',
+    recipes.RecipeViewSet,
+    basename='recipes'
+)
+router.register(
     'users/subscribtions',
     users.SubscribtionsListViewSet,
     basename='subscribtions'
 )
-# router.register(
-#     r'users/(?P<user_id>\d+)/subscribe',
-#     users.FollowViewSet,
-#     basename='follow'
-# )
-# router.register('users', users.UserViewSet, basename='users')
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -15,6 +15,20 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
 
 
+class RecipeCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = (
+            'author',
+            'name',
+            'tags',
+            'ingredients',
+            'text',
+            'cooking_time',
+            'image',
+        )
+        model = Recipe
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (

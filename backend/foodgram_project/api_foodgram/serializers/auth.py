@@ -3,6 +3,8 @@ from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from djoser.conf import settings
 
+from users.models import Follow
+
 # from recipes.validators import (
 #     validate_forbidden_username,
 #     validate_unique_case_insensitive_username,
@@ -27,9 +29,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 
 class CustomUserSerializer(UserSerializer):
-    is_subscribed = serializers.BooleanField(
-        default=False
-    )
+    is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -40,3 +40,10 @@ class CustomUserSerializer(UserSerializer):
             'is_subscribed'
         )
         read_only_fields = (settings.LOGIN_FIELD,)
+
+    def get_is_subscribed(self, obj):
+        subscriber = self.context['request'].user
+        user = obj
+        if Follow.objects.filter(user=user, subscriber=subscriber):
+            return True
+        return False

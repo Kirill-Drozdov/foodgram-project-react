@@ -6,7 +6,8 @@ from recipes.models import Tag, Ingredient, Recipe
 from api_foodgram.serializers.recipes import (
     TagSerializer,
     IngredientSerializer,
-    RecipeSerializer
+    RecipeSerializer,
+    RecipeCreateSerializer
 )
 
 
@@ -23,3 +24,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return RecipeCreateSerializer
