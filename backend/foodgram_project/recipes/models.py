@@ -35,10 +35,12 @@ class Ingredient(models.Model):
     name = models.CharField(
         'Название ингредиента',
         max_length=100,
+        blank=True,
         db_index=True
     )
     measurement_unit = models.CharField(
         'Единица измерения',
+        blank=True,
         max_length=15,
     )
 
@@ -63,12 +65,14 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         Tag,
+        # through='RecipeTag',
         verbose_name='Теги'
     )
     ingredients = models.ManyToManyField(
         Ingredient,
         through='RecipeIngredientAmount',
-        verbose_name='Ингредиенты'
+        verbose_name='Ингредиенты',
+        blank=True
     )
     text = models.TextField(
         'Описание'
@@ -97,6 +101,20 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# class RecipeTag(models.Model):
+#     recipe = models.ForeignKey(
+#         Recipe,
+#         on_delete=models.CASCADE
+#     )
+#     tag = models.ForeignKey(
+#         Tag,
+#         on_delete=models.CASCADE
+#     )
+
+#     def __str__(self):
+#         return f'{self.recipe} {self.tag}'
 
 
 class RecipeIngredientAmount(models.Model):
