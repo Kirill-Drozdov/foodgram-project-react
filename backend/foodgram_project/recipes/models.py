@@ -52,6 +52,21 @@ class Ingredient(models.Model):
         return self.name
 
 
+class IngredientAmount(models.Model):
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE
+    )
+    amount = models.IntegerField(
+        'Количество',
+        validators=[validate_amount]
+    )
+
+    def __str__(self):
+        return (f'{self.ingredient.name},'
+                f'{self.ingredient.measurement_unit}: {self.amount}')
+
+
 class Recipe(models.Model):
     author = models.ForeignKey(
         User,
@@ -69,10 +84,11 @@ class Recipe(models.Model):
         verbose_name='Теги'
     )
     ingredients = models.ManyToManyField(
-        Ingredient,
-        through='RecipeIngredientAmount',
+        IngredientAmount,
+        related_name='recipes',
+        # through='RecipeIngredientAmount',
         verbose_name='Ингредиенты',
-        # blank=True
+
     )
     text = models.TextField(
         'Описание'
@@ -103,36 +119,22 @@ class Recipe(models.Model):
         return self.name
 
 
-# class RecipeTag(models.Model):
+# class RecipeIngredientAmount(models.Model):
+#     ingredient = models.ForeignKey(
+#         Ingredient,
+#         on_delete=models.CASCADE
+#     )
 #     recipe = models.ForeignKey(
 #         Recipe,
 #         on_delete=models.CASCADE
 #     )
-#     tag = models.ForeignKey(
-#         Tag,
-#         on_delete=models.CASCADE
+#     amount = models.IntegerField(
+#         'Количество',
+#         validators=[validate_amount]
 #     )
 
 #     def __str__(self):
-#         return f'{self.recipe} {self.tag}'
-
-
-class RecipeIngredientAmount(models.Model):
-    ingredient = models.ForeignKey(
-        Ingredient,
-        on_delete=models.CASCADE
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE
-    )
-    amount = models.IntegerField(
-        'Количество',
-        validators=[validate_amount]
-    )
-
-    def __str__(self):
-        return f'{self.ingredient}, {self.recipe}'
+#         return f'{self.ingredient}, {self.recipe}'
 
 
 class Favorite(models.Model):
