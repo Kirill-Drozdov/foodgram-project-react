@@ -72,7 +72,7 @@ class Recipe(models.Model):
         Ingredient,
         through='RecipeIngredientAmount',
         verbose_name='Ингредиенты',
-        blank=True
+        # blank=True
     )
     text = models.TextField(
         'Описание'

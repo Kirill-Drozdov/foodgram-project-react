@@ -66,20 +66,31 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         model = Recipe
 
     def create(self, validated_data):
+        print(validated_data)
         ingredients = validated_data.pop('ingredients')
-        recipe = Recipe.objects.create(**validated_data)
+        tags = validated_data.pop('tags')
+        recipe = Recipe.objects.create(
+            **validated_data
+            # author=self.context['request'].user,
+            # name=validated_data['name'],
+            # text=validated_data['text'],
+            # cooking_time=validated_data['cooking_time']
+        )
 
-        for ingredient in ingredients:
-            ingredient_pk = ingredient.get('id')
-            current_ingredient = Ingredient.objects.get(
-                pk=ingredient_pk
-            )
-            amount = ingredient.get('amount')
-            RecipeIngredientAmount.objects.create(
-                recipe=recipe,
-                ingredient=current_ingredient,
-                amount=amount
-            )
+        # for ingredient in ingredients:
+        #     print(ingredients)
+        #     print(ingredient)
+        #     ingredient_name = ingredient.get('ingredient')
+        #     print(ingredient_name.pk)
+        #     current_ingredient = Ingredient.objects.get(
+        #         pk=ingredient_name.pk
+        #     )
+        #     print(current_ingredient.name)
+        #     amount = ingredient.get('amount')
+        #     recipe.ingredients.add(
+        #         current_ingredient,
+        #         through_defaults={'amount': amount}
+        #     )
         return recipe
 
 
@@ -91,6 +102,9 @@ class TagFieldSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     tags = TagFieldSerializer(
+        read_only=True, many=True
+    )
+    ingredients = IngredientSerializer(
         read_only=True, many=True
     )
     author = AuthorFieldSerializer(read_only=True)
