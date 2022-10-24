@@ -91,12 +91,6 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         return recipe
 
 
-class TagFieldSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = ('__all__')
-        model = Tag
-
-
 class IngredientListFieldSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         source='ingredient',
@@ -117,7 +111,7 @@ class IngredientListFieldSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    tags = TagFieldSerializer(
+    tags = TagSerializer(
         read_only=True, many=True
     )
     ingredients = IngredientListFieldSerializer(

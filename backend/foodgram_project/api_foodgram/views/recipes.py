@@ -1,4 +1,4 @@
-# from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
@@ -23,18 +23,48 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    # serializer_class = RecipeSerializer
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        if (self.action == 'create' or
+                self.action == 'update'):
             return RecipeCreateSerializer
         return RecipeSerializer
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         author = self.request.user
         if serializer.is_valid():
-            serializer.save(
+            output_recipe = serializer.save(
                 author=author)
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            output_serializer = RecipeSerializer(
+                output_recipe, context={'request': request}
+            )
+            return Response(
+                output_serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        recipe = get_object_or_404(Recipe, pk=kwargs.get('pk'))
+        serializer = self.get_serializer(
+            recipe, data=request.data, partial=partial)
+        author = self.request.user
+        if serializer.is_valid():
+            output_recipe = serializer.save(
+                author=author)
+            output_serializer = RecipeSerializer(
+                output_recipe, context={'request': request}
+            )
+            return Response(
+                output_serializer.data,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
