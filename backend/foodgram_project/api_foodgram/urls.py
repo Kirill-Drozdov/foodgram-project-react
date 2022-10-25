@@ -30,4 +30,7 @@ urlpatterns = [
     path('users/<int:pk>/subscribe/',
          users.FollowAPIView.as_view(),
          name='subscribe'),
+    path('recipes/<int:pk>/favorite/',
+         recipes.FavoriteAPIView.as_view(),
+         name='favorite'),
 ]

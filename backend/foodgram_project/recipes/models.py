@@ -62,6 +62,10 @@ class IngredientAmount(models.Model):
         validators=[validate_amount]
     )
 
+    class Meta:
+        verbose_name = 'Количество ингредиентов'
+        verbose_name_plural = 'Количество ингредиентов'
+
     def __str__(self):
         return (f'{self.ingredient.name},'
                 f'{self.ingredient.measurement_unit}: {self.amount}')

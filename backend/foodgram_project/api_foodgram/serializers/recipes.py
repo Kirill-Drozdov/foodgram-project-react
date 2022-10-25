@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
-# from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
-from recipes.models import Tag, Ingredient, Recipe, IngredientAmount
+from recipes.models import Tag, Ingredient, Recipe, IngredientAmount, Favorite
 from users.models import Follow
 
 User = get_user_model()
@@ -160,3 +160,48 @@ class RecipeSerializer(serializers.ModelSerializer):
             'cooking_time',
         )
         model = Recipe
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+    id = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
+    cooking_time = serializers.SerializerMethodField()
+
+    def validate(self, data):
+        pk = self.context.get('view').kwargs.get('pk')
+        recipe = get_object_or_404(Recipe, pk=pk)
+        self.recipe_obj = recipe
+        user = self.context['request'].user
+        if Favorite.objects.filter(
+            user=user,
+            recipe=recipe
+        ).exists():
+            raise serializers.ValidationError(
+                f'Рецепт {recipe.name} уже в избранном!'
+            )
+        return data
+
+    class Meta:
+        model = Favorite
+        fields = (
+            # 'user',
+            # 'recipe',
+            'id',
+            'name',
+            'image',
+            'cooking_time'
+        )
+
+    def get_id(self, obj):
+        return self.recipe_obj.pk
+
+    def get_name(self, obj):
+        return self.recipe_obj.name
+
+    def get_image(self, obj):
+        # return self.recipe_obj.image
+        return None
+
+    def get_cooking_time(self, obj):
+        return self.recipe_obj.cooking_time

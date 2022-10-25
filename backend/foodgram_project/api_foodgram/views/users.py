@@ -35,13 +35,9 @@ class FollowAPIView(generics.CreateAPIView,
                     generics.DestroyAPIView):
     """Подписка/отписка на автора."""
     serializer_class = FollowSerializer
-    # filter_backends = (filters.SearchFilter,)
-    # filterset_fields = ('following',)
-    # search_fields = ('=following__username',)
 
     def get_queryset(self):
         user = self.request.user
-        print(self.request)
         new_queryset = Follow.objects.filter(user=user)
         return new_queryset
 
