@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+# from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
@@ -25,8 +25,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
 
     def get_serializer_class(self):
-        if (self.action == 'create' or
-                self.action == 'update'):
+        if self.action in ['create', 'update']:
             return RecipeCreateSerializer
         return RecipeSerializer
 
@@ -48,21 +47,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop('partial', False)
-        recipe = get_object_or_404(Recipe, pk=kwargs.get('pk'))
-        serializer = self.get_serializer(
-            recipe, data=request.data, partial=partial)
+    def perform_update(self, serializer):
+        recipe = self.get_object()
+        serializer = RecipeCreateSerializer(
+            recipe, data=self.request.data)
         author = self.request.user
         if serializer.is_valid():
             output_recipe = serializer.save(
                 author=author)
             output_serializer = RecipeSerializer(
-                output_recipe, context={'request': request}
+                output_recipe, context={'request': self.request}
             )
             return Response(
                 output_serializer.data,
-                status=status.HTTP_201_CREATED
+                status=status.HTTP_200_OK
             )
         return Response(
             serializer.errors,
