@@ -2,13 +2,14 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 
-from recipes.models import Tag, Ingredient, Recipe, Favorite
+from recipes.models import Tag, Ingredient, Recipe, Favorite, ShoppingCart
 from api_foodgram.serializers.recipes import (
     TagSerializer,
     IngredientSerializer,
     RecipeSerializer,
     RecipeCreateSerializer,
-    FavoriteSerializer
+    FavoriteSerializer,
+    ShoppingCartSerializer
 )
 
 
@@ -71,7 +72,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 class FavoriteAPIView(generics.CreateAPIView,
                       generics.DestroyAPIView):
-    """Подписка/отписка на автора."""
+    """Добавление/удаление в список избранного."""
     serializer_class = FavoriteSerializer
 
     def get_queryset(self):
@@ -97,6 +98,41 @@ class FavoriteAPIView(generics.CreateAPIView,
         recipe = get_object_or_404(Recipe, pk=recipe_id)
         instance = get_object_or_404(
             Favorite,
+            user=user,
+            recipe=recipe
+        )
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ShoppingCartAPIView(generics.CreateAPIView,
+                          generics.DestroyAPIView):
+    """Добавление/удаление в список покупок."""
+    serializer_class = ShoppingCartSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        new_queryset = ShoppingCart.objects.filter(user=user)
+        return new_queryset
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        recipe_id = self.kwargs.get('pk')
+        recipe = get_object_or_404(Recipe, pk=recipe_id)
+        if serializer.is_valid():
+            serializer.save(
+                user=user,
+                recipe=recipe)
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        user = self.request.user
+        recipe_id = self.kwargs.get('pk')
+        recipe = get_object_or_404(Recipe, pk=recipe_id)
+        instance = get_object_or_404(
+            ShoppingCart,
             user=user,
             recipe=recipe
         )

@@ -6,7 +6,11 @@ from api_foodgram.views import recipes, users
 app_name = 'api_foodgram'
 
 router = routers.DefaultRouter()
-router.register('tags', recipes.TagViewSet, basename='tags')
+router.register(
+    'tags',
+    recipes.TagViewSet,
+    basename='tags'
+)
 router.register(
     'ingredients',
     recipes.IngredientViewSet,
@@ -33,4 +37,7 @@ urlpatterns = [
     path('recipes/<int:pk>/favorite/',
          recipes.FavoriteAPIView.as_view(),
          name='favorite'),
+    path('recipes/<int:pk>/shopping_cart/',
+         recipes.ShoppingCartAPIView.as_view(),
+         name='shopping_cart'),
 ]
