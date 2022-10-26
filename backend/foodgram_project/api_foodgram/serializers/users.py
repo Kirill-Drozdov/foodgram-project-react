@@ -1,13 +1,30 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from recipes.models import Recipe
 from users.models import Follow
 
 User = get_user_model()
 
 
+class RecipesFieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'name',
+            'image',
+            'cooking_time'
+        )
+
+
 class SubscribtionsSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
+    recipes = RecipesFieldSerializer(
+        read_only=True,
+        many=True
+    )
+    recipes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -18,13 +35,18 @@ class SubscribtionsSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'is_subscribed',
+            'recipes',
+            'recipes_count'
         )
 
     def get_is_subscribed(self, obj):
-        subscriber = self.context['request'].user
-        user = obj
-        if Follow.objects.filter(user=user, subscriber=subscriber):
-            return True
+        return Follow.objects.filter(
+            user=obj,
+            subscriber=self.context['request'].user
+        ).exists()
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.count()
 
 
 class FollowSerializer(serializers.ModelSerializer):
@@ -38,6 +60,11 @@ class FollowSerializer(serializers.ModelSerializer):
     last_name = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
     is_subscribed = serializers.SerializerMethodField()
+    recipes = RecipesFieldSerializer(
+        read_only=True,
+        many=True
+    )
+    recipes_count = serializers.SerializerMethodField()
 
     def validate(self, data):
         pk = self.context.get('view').kwargs.get('pk')
@@ -65,7 +92,9 @@ class FollowSerializer(serializers.ModelSerializer):
             'first_name',
             'last_name',
             'id',
-            'is_subscribed'
+            'is_subscribed',
+            'recipes',
+            'recipes_count'
         )
 
     def get_email(self, obj):
@@ -82,3 +111,6 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         return True
+
+    def get_recipes_count(self, obj):
+        return self.user.recipes.count()

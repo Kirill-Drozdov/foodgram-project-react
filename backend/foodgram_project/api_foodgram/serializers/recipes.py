@@ -40,11 +40,10 @@ class AuthorFieldSerializer(serializers.ModelSerializer):
         model = User
 
     def get_is_subscribed(self, obj):
-        subscriber = self.context['request'].user
-        user = obj
-        if Follow.objects.filter(user=user, subscriber=subscriber):
-            return True
-        return False
+        return Follow.objects.filter(
+            user=obj,
+            subscriber=self.context['request'].user
+        ).exists()
 
 
 class IngredientFieldSerializer(serializers.ModelSerializer):
@@ -150,6 +149,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         read_only=True, many=True
     )
     author = AuthorFieldSerializer(read_only=True)
+    is_favorited = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
         fields = (
@@ -165,6 +166,18 @@ class RecipeSerializer(serializers.ModelSerializer):
             'cooking_time',
         )
         model = Recipe
+
+    def get_is_favorited(self, obj):
+        return Favorite.objects.filter(
+            user=self.context['request'].user,
+            recipe=obj
+        ).exists()
+
+    def get_is_in_shopping_cart(self, obj):
+        return ShoppingCart.objects.filter(
+            user=self.context['request'].user,
+            recipe=obj
+        ).exists()
 
 
 class FavoriteSerializer(serializers.ModelSerializer):
