@@ -1,3 +1,6 @@
+import base64
+
+from django.core.files.base import ContentFile
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
@@ -57,9 +60,27 @@ class IngredientFieldSerializer(serializers.ModelSerializer):
         model = IngredientAmount
 
 
+class Base64ImageField(serializers.ImageField):
+    def to_internal_value(self, data):
+        # Если полученный объект строка, и эта строка
+        # начинается с 'data:image'...
+        if isinstance(data, str) and data.startswith('data:image'):
+            # ...начинаем декодировать изображение из base64.
+            # Сначала нужно разделить строку на части.
+            format, imgstr = data.split(';base64,')
+            # И извлечь расширение файла.
+            ext = format.split('/')[-1]
+            # Затем декодировать сами данные и поместить результат в файл,
+            # которому дать название по шаблону.
+            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+
+        return super().to_internal_value(data)
+
+
 class RecipeCreateSerializer(serializers.ModelSerializer):
     author = AuthorFieldSerializer(read_only=True)
     ingredients = IngredientFieldSerializer(many=True, required=True)
+    image = Base64ImageField(required=True, allow_null=False)
 
     class Meta:
         fields = (
@@ -102,7 +123,7 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         instance.text = validated_data.get('text', instance.text)
         instance.cooking_time = validated_data.get(
             'cooking_time', instance.cooking_time)
-        # recipe.image = validated_data.get('image', recipe.image)
+        instance.image = validated_data.get('image', instance.image)
 
         instance.tags.clear()
         instance.ingredients.clear()
@@ -151,6 +172,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = AuthorFieldSerializer(read_only=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
+    image = Base64ImageField(required=True, allow_null=False)
 
     class Meta:
         fields = (

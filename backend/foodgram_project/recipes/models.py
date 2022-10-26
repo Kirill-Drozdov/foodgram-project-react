@@ -103,7 +103,7 @@ class Recipe(models.Model):
     )
     image = models.ImageField(
         'Картинка',
-        upload_to='recipes',
+        upload_to='recipes/images/',
         blank=True
     )
     is_favorited = models.BooleanField(
