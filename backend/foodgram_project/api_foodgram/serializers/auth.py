@@ -42,8 +42,9 @@ class CustomUserSerializer(UserSerializer):
         read_only_fields = (settings.LOGIN_FIELD,)
 
     def get_is_subscribed(self, obj):
-        subscriber = self.context['request'].user
-        user = obj
-        if Follow.objects.filter(user=user, subscriber=subscriber):
-            return True
-        return False
+        if not self.context['request'].user.is_authenticated:
+            return False
+        return Follow.objects.filter(
+            user=obj,
+            subscriber=self.context['request'].user
+        ).exists()

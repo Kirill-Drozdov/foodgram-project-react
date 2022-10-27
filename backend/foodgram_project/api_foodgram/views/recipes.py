@@ -11,6 +11,7 @@ from api_foodgram.serializers.recipes import (
     FavoriteSerializer,
     ShoppingCartSerializer
 )
+from api_foodgram.permissions import IsStaffOrAuthorOrReadOnlyPermission
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -25,6 +26,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
+    permission_classes = (IsStaffOrAuthorOrReadOnlyPermission,)
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:

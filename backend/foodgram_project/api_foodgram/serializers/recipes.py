@@ -43,6 +43,8 @@ class AuthorFieldSerializer(serializers.ModelSerializer):
         model = User
 
     def get_is_subscribed(self, obj):
+        if not self.context['request'].user.is_authenticated:
+            return False
         return Follow.objects.filter(
             user=obj,
             subscriber=self.context['request'].user
@@ -190,12 +192,16 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
 
     def get_is_favorited(self, obj):
+        if not self.context['request'].user.is_authenticated:
+            return False
         return Favorite.objects.filter(
             user=self.context['request'].user,
             recipe=obj
         ).exists()
 
     def get_is_in_shopping_cart(self, obj):
+        if not self.context['request'].user.is_authenticated:
+            return False
         return ShoppingCart.objects.filter(
             user=self.context['request'].user,
             recipe=obj
