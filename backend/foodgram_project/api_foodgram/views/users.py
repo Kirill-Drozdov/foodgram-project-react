@@ -49,13 +49,6 @@ class FollowAPIView(generics.CreateAPIView,
             serializer.save(
                 user=user,
                 subscriber=subscriber)
-            # output_serializer = SubscribtionsSerializer(
-            #     user, context={'request': self.request}
-            # )
-            # return Response(
-            #     output_serializer.data,
-            #     status=status.HTTP_201_CREATED
-            # )
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)

@@ -61,7 +61,7 @@ class FollowSerializer(serializers.ModelSerializer):
     last_name = serializers.SerializerMethodField()
     id = serializers.SerializerMethodField()
     is_subscribed = serializers.SerializerMethodField()
-    # recipes = serializers.SerializerMethodField()
+    recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
 
     def validate(self, data):
@@ -91,7 +91,7 @@ class FollowSerializer(serializers.ModelSerializer):
             'last_name',
             'id',
             'is_subscribed',
-            # 'recipes',
+            'recipes',
             'recipes_count'
         )
 
@@ -110,9 +110,13 @@ class FollowSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj):
         return True
 
-    # def get_recipes(self, obj):
-    #     recipes = self.user.recipes
-    #     return recipes
+    def get_recipes(self, obj):
+        recipes = self.user.recipes
+        return RecipesFieldSerializer(
+            recipes,
+            many=True,
+            context=self.context
+        ).data
 
     def get_recipes_count(self, obj):
         return self.user.recipes.count()
