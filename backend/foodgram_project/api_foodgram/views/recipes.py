@@ -11,17 +11,22 @@ from api_foodgram.serializers.recipes import (
     FavoriteSerializer,
     ShoppingCartSerializer
 )
-from api_foodgram.permissions import IsStaffOrAuthorOrReadOnlyPermission
+from api_foodgram.permissions import (
+    IsStaffOrAuthorOrReadOnlyPermission,
+    IsAdminOrReadOnlyPermission
+)
 
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = (IsAdminOrReadOnlyPermission,)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    permission_classes = (IsAdminOrReadOnlyPermission,)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
