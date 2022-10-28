@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status, generics
+from rest_framework import viewsets, status, generics, filters
 from rest_framework.response import Response
+from django_filters.rest_framework import DjangoFilterBackend
 
 from recipes.models import Tag, Ingredient, Recipe, Favorite, ShoppingCart
 from api_foodgram.serializers.recipes import (
@@ -26,12 +27,16 @@ class TagViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (IsAdminOrReadOnlyPermission,)
+    # permission_classes = (IsAdminOrReadOnlyPermission,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = (IsStaffOrAuthorOrReadOnlyPermission,)
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('tags__slug', 'author')
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
