@@ -35,8 +35,48 @@ class IngredientViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = (IsStaffOrAuthorOrReadOnlyPermission,)
-    filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('tags__slug', 'author')
+    # filter_backends = (DjangoFilterBackend,)
+    # filterset_fields = ('tags__slug', 'author')
+
+    def get_queryset(self):
+        queryset = Recipe.objects.all()
+        is_favorited = self.request.query_params.get('is_favorited')
+        is_in_shopping_cart = self.request.query_params.get(
+            'is_in_shopping_cart'
+        )
+        tags = self.request.query_params.get('tags')
+        print(tags)
+        if tags is not None:
+            tag = get_object_or_404(
+                Tag, slug=tags
+            )
+            queryset = Recipe.objects.filter(
+                tags=tag
+            )
+            return queryset
+        if is_favorited == '1' and self.request.user.is_authenticated:
+            favorites = Favorite.objects.filter(
+                user=self.request.user
+            )
+            queryset = []
+            for obj in favorites:
+                recipe = Recipe.objects.get(
+                    pk=obj.recipe.pk
+                )
+                queryset.append(recipe)
+            return queryset
+        if is_in_shopping_cart == '1' and self.request.user.is_authenticated:
+            shopping_cart = ShoppingCart.objects.filter(
+                user=self.request.user
+            )
+            queryset = []
+            for obj in shopping_cart:
+                recipe = Recipe.objects.get(
+                    pk=obj.recipe.pk
+                )
+                queryset.append(recipe)
+            return queryset
+        return queryset
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
