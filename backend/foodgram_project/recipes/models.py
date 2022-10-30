@@ -106,14 +106,14 @@ class Recipe(models.Model):
         upload_to='recipes/images/',
         blank=True
     )
-    is_favorited = models.BooleanField(
-        'В избранном',
-        default=False
-    )
-    is_in_shopping_cart = models.BooleanField(
-        'В списке покупок',
-        default=False
-    )
+    # is_favorited = models.BooleanField(
+    #     'В избранном',
+    #     default=False
+    # )
+    # is_in_shopping_cart = models.BooleanField(
+    #     'В списке покупок',
+    #     default=False
+    # )
 
     class Meta:
         verbose_name = 'Рецепт'
