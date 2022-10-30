@@ -5,30 +5,21 @@ from rest_framework.response import Response
 
 from api_foodgram.serializers.users import (
     FollowSerializer,
-    SubscribtionsSerializer)
+    SubscriptionsSerializer)
 from users.models import Follow
 
 User = get_user_model()
 
 
-class SubscribtionsListViewSet(
+class SubscriptionsListViewSet(
         mixins.ListModelMixin,
         viewsets.GenericViewSet):
-    serializer_class = SubscribtionsSerializer
-    # queryset = User.objects.all()
+    serializer_class = SubscriptionsSerializer
 
     def get_queryset(self):
-        subscriber = User.objects.get(
-            pk=self.request.user.pk
+        return User.objects.filter(
+            followers__subscriber=self.request.user
         )
-        follow_model = Follow.objects.filter(subscriber=subscriber)
-        new_queryset = []
-        for obj in follow_model:
-            user = User.objects.get(
-                pk=obj.user.pk
-            )
-            new_queryset.append(user)
-        return new_queryset
 
 
 class FollowAPIView(generics.CreateAPIView,
@@ -37,13 +28,15 @@ class FollowAPIView(generics.CreateAPIView,
     serializer_class = FollowSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        new_queryset = Follow.objects.filter(user=user)
-        return new_queryset
+        return Follow.objects.filter(
+            user=self.request.user
+        )
 
     def perform_create(self, serializer):
-        user_id = self.kwargs.get('pk')
-        user = get_object_or_404(User, pk=user_id)
+        user = get_object_or_404(
+            User,
+            pk=self.kwargs.get('pk')
+        )
         subscriber = self.request.user
         if serializer.is_valid():
             serializer.save(
@@ -54,8 +47,10 @@ class FollowAPIView(generics.CreateAPIView,
                             status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
-        user_id = self.kwargs.get('pk')
-        user = get_object_or_404(User, pk=user_id)
+        user = get_object_or_404(
+            User,
+            pk=self.kwargs.get('pk')
+        )
         subscriber = get_object_or_404(
             User, username=self.request.user.username
         )

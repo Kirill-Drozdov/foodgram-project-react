@@ -18,7 +18,7 @@ class RecipesFieldSerializer(serializers.ModelSerializer):
         )
 
 
-class SubscribtionsSerializer(serializers.ModelSerializer):
+class SubscriptionsSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
     recipes = RecipesFieldSerializer(
         read_only=True,

@@ -89,14 +89,16 @@ class FavoriteAPIView(generics.CreateAPIView,
     serializer_class = FavoriteSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        new_queryset = Favorite.objects.filter(user=user)
-        return new_queryset
+        return Favorite.objects.filter(
+            user=self.request.user
+        )
 
     def perform_create(self, serializer):
         user = self.request.user
-        recipe_id = self.kwargs.get('pk')
-        recipe = get_object_or_404(Recipe, pk=recipe_id)
+        recipe = get_object_or_404(
+            Recipe,
+            pk=self.kwargs.get('pk')
+        )
         if serializer.is_valid():
             serializer.save(
                 user=user,
@@ -107,8 +109,10 @@ class FavoriteAPIView(generics.CreateAPIView,
 
     def destroy(self, request, *args, **kwargs):
         user = self.request.user
-        recipe_id = self.kwargs.get('pk')
-        recipe = get_object_or_404(Recipe, pk=recipe_id)
+        recipe = get_object_or_404(
+            Recipe,
+            pk=self.kwargs.get('pk')
+        )
         instance = get_object_or_404(
             Favorite,
             user=user,
@@ -124,14 +128,16 @@ class ShoppingCartAPIView(generics.CreateAPIView,
     serializer_class = ShoppingCartSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        new_queryset = ShoppingCart.objects.filter(user=user)
-        return new_queryset
+        return ShoppingCart.objects.filter(
+            user=self.request.user
+        )
 
     def perform_create(self, serializer):
         user = self.request.user
-        recipe_id = self.kwargs.get('pk')
-        recipe = get_object_or_404(Recipe, pk=recipe_id)
+        recipe = get_object_or_404(
+            Recipe,
+            pk=self.kwargs.get('pk')
+        )
         if serializer.is_valid():
             serializer.save(
                 user=user,
@@ -142,8 +148,10 @@ class ShoppingCartAPIView(generics.CreateAPIView,
 
     def destroy(self, request, *args, **kwargs):
         user = self.request.user
-        recipe_id = self.kwargs.get('pk')
-        recipe = get_object_or_404(Recipe, pk=recipe_id)
+        recipe = get_object_or_404(
+            Recipe,
+            pk=self.kwargs.get('pk')
+        )
         instance = get_object_or_404(
             ShoppingCart,
             user=user,

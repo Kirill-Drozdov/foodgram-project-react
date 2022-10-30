@@ -22,9 +22,9 @@ router.register(
     basename='recipes'
 )
 router.register(
-    'users/subscribtions',
-    users.SubscribtionsListViewSet,
-    basename='subscribtions'
+    'users/subscriptions',
+    users.SubscriptionsListViewSet,
+    basename='subscriptions'
 )
 
 urlpatterns = [
