@@ -28,6 +28,10 @@ router.register(
 )
 
 urlpatterns = [
+    path('recipes/download_shopping_cart/',
+         recipes.download_shopping_cart,
+         name='download_shopping_cart'
+         ),
     path('', include(router.urls)),
     path('', include('djoser.urls.base')),
     path('auth/', include('djoser.urls.authtoken')),

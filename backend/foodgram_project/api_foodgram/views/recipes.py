@@ -1,9 +1,11 @@
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 from rest_framework import viewsets, status, generics, filters
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
-from recipes.models import Tag, Ingredient, Recipe, Favorite, ShoppingCart
+from recipes.models import Tag, Ingredient, Recipe, Favorite, ShoppingCart, IngredientAmount
 from api_foodgram.serializers.recipes import (
     TagSerializer,
     IngredientSerializer,
@@ -159,3 +161,29 @@ class ShoppingCartAPIView(generics.CreateAPIView,
         )
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET', ])
+def download_shopping_cart(request):
+    user = request.user
+    recipes = Recipe.objects.filter(
+        shopping_cart__user=user
+    )
+    count = recipes.count()
+    response = HttpResponse(content_type='text/plain')
+    filename = 'shopping_cart.txt'
+    response['Content-Disposition'] = f'attachment; filename={filename}'
+    lines = [f'У вас {count} рецептов в списке покупок.\n', ]
+    response.writelines(lines)
+    ingredients = []
+    for recipe in recipes:
+        ingr = IngredientAmount.objects.filter(
+            recipes=recipe
+        )
+        for i in ingr:
+            print(i.ingredient, i.amount, i.ingredient.measurement_unit)
+            ingredients += f'{i.ingredient.name, i.amount, i.ingredient.measurement_unit}\n'
+        print()
+
+    response.writelines(ingredients)
+    return response

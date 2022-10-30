@@ -106,14 +106,6 @@ class Recipe(models.Model):
         upload_to='recipes/images/',
         blank=True
     )
-    # is_favorited = models.BooleanField(
-    #     'В избранном',
-    #     default=False
-    # )
-    # is_in_shopping_cart = models.BooleanField(
-    #     'В списке покупок',
-    #     default=False
-    # )
 
     class Meta:
         verbose_name = 'Рецепт'
@@ -121,24 +113,6 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
-
-
-# class RecipeIngredientAmount(models.Model):
-#     ingredient = models.ForeignKey(
-#         Ingredient,
-#         on_delete=models.CASCADE
-#     )
-#     recipe = models.ForeignKey(
-#         Recipe,
-#         on_delete=models.CASCADE
-#     )
-#     amount = models.IntegerField(
-#         'Количество',
-#         validators=[validate_amount]
-#     )
-
-#     def __str__(self):
-#         return f'{self.ingredient}, {self.recipe}'
 
 
 class Favorite(models.Model):
