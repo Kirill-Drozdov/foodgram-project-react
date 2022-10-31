@@ -84,13 +84,11 @@ class Recipe(models.Model):
     )
     tags = models.ManyToManyField(
         Tag,
-        # through='RecipeTag',
         verbose_name='Теги'
     )
     ingredients = models.ManyToManyField(
         IngredientAmount,
         related_name='recipes',
-        # through='RecipeIngredientAmount',
         verbose_name='Ингредиенты',
 
     )
@@ -106,10 +104,16 @@ class Recipe(models.Model):
         upload_to='recipes/images/',
         blank=True
     )
+    pub_date = models.DateTimeField(
+        'Дата публикации',
+        auto_now_add=True,
+        db_index=True
+    )
 
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
+        ordering = ('-pub_date',)
 
     def __str__(self):
         return self.name
