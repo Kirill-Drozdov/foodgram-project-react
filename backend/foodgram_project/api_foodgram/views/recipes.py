@@ -1,3 +1,5 @@
+from datetime import datetime as dt
+
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from rest_framework import viewsets, status, generics, filters
@@ -5,7 +7,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
-from recipes.models import Tag, Ingredient, Recipe, Favorite, ShoppingCart, IngredientAmount
+from recipes.models import (
+    Tag,
+    Ingredient,
+    Recipe,
+    Favorite,
+    ShoppingCart,
+    IngredientAmount
+)
 from api_foodgram.serializers.recipes import (
     TagSerializer,
     IngredientSerializer,
@@ -30,7 +39,6 @@ class TagViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    # permission_classes = (IsAdminOrReadOnlyPermission,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
 
@@ -166,24 +174,40 @@ class ShoppingCartAPIView(generics.CreateAPIView,
 @api_view(['GET', ])
 def download_shopping_cart(request):
     user = request.user
+    if not user.is_authenticated:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
     recipes = Recipe.objects.filter(
         shopping_cart__user=user
     )
-    count = recipes.count()
     response = HttpResponse(content_type='text/plain')
-    filename = 'shopping_cart.txt'
+    filename = f'{user.username}_shopping_cart.txt'
     response['Content-Disposition'] = f'attachment; filename={filename}'
-    lines = [f'У вас {count} рецептов в списке покупок.\n', ]
-    response.writelines(lines)
-    ingredients = []
+    header = ['Foodgram project\n',
+              '----------------\n'
+              ]
+    response.writelines(header)
+    output_text = []
+    products_dict = dict()
     for recipe in recipes:
-        ingr = IngredientAmount.objects.filter(
+        ingredients = IngredientAmount.objects.filter(
             recipes=recipe
         )
-        for i in ingr:
-            print(i.ingredient, i.amount, i.ingredient.measurement_unit)
-            ingredients += f'{i.ingredient.name, i.amount, i.ingredient.measurement_unit}\n'
-        print()
-
-    response.writelines(ingredients)
+        for i in ingredients:
+            name = i.ingredient.name
+            amount = i.amount
+            measurement_unit = i.ingredient.measurement_unit
+            if products_dict.get(name, False):
+                products_dict[name][0] += amount
+            else:
+                products_dict[name] = [amount, measurement_unit]
+    for product in products_dict:
+        name = product
+        amount = products_dict[product][0]
+        measurement_unit = products_dict[product][1]
+        output_text += f'{name}({measurement_unit}) - {amount}\n'
+    response.writelines(output_text)
+    footer = ['----------------\n',
+              f'Дата - {dt.now().date()}'
+              ]
+    response.writelines(footer)
     return response
