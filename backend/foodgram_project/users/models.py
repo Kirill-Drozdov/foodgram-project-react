@@ -37,7 +37,7 @@ class User(AbstractUser):
     )
     first_name = models.CharField(
         gettext_lazy('first name'),
-        max_length=150,
+        max_length=30,
         blank=False
     )
     last_name = models.CharField(
