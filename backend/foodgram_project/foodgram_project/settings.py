@@ -7,10 +7,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='38yt93ghrjngfkjgkejrghie49')
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    os.getenv('HOST_A', default='*'),
+    # os.getenv('HOST_A', default='*'),
+    '*'
 ]
 
 INSTALLED_APPS = [
@@ -63,11 +64,14 @@ WSGI_APPLICATION = 'foodgram_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', default='db_name'),
+        'USER': os.getenv('POSTGRES_USER', default='username'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='pas36s98wo21r6d'),
+        'HOST': os.getenv('DB_HOST', default='db'),
+        'PORT': os.getenv('DB_PORT', default='5432')
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -99,7 +103,13 @@ USE_L10N = True
 USE_TZ = True
 
 
+# STATIC_URL = '/static/'
+
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -118,9 +128,11 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 6,
 }
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost',
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost',
+# ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
 
 DJOSER = {
