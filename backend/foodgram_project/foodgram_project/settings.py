@@ -62,14 +62,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram_project.wsgi.application'
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+#         'NAME': os.getenv('DB_NAME', default='db_name'),
+#         'USER': os.getenv('POSTGRES_USER', default='username'),
+#         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='pas36s98wo21r6d'),
+#         'HOST': os.getenv('DB_HOST', default='db'),
+#         'PORT': os.getenv('DB_PORT', default='5432')
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME', default='db_name'),
-        'USER': os.getenv('POSTGRES_USER', default='username'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='pas36s98wo21r6d'),
-        'HOST': os.getenv('DB_HOST', default='db'),
-        'PORT': os.getenv('DB_PORT', default='5432')
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
@@ -126,7 +133,10 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 6,
+    'SEARCH_PARAM': 'name',
 }
+
+# SEARCH_PARAM = 'name'
 
 # CORS_ALLOWED_ORIGINS = [
 #     'http://localhost',

@@ -33,14 +33,17 @@ from api_foodgram.filters import RecipeFilter
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    pagination_class = None
     permission_classes = (IsAdminOrReadOnlyPermission,)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    pagination_class = None
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
+    search_fields = ('^name',)
+    lookup_field = 'name'
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
