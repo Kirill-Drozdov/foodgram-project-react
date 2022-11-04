@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from colorfield.fields import ColorField
 
 from recipes.validators import validate_amount, validate_cooking_time
 
@@ -13,9 +14,9 @@ class Tag(models.Model):
         unique=True,
         db_index=True
     )
-    color = models.CharField(
+    color = ColorField(
         'Цветовой HEX-код',
-        max_length=16,
+        max_length=7,
         unique=True
     )
     slug = models.SlugField(

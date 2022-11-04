@@ -18,13 +18,22 @@ User = get_user_model()
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('__all__')
+        fields = (
+            'id',
+            'name',
+            'color',
+            'slug',
+        )
         model = Tag
 
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('__all__')
+        fields = (
+            'id',
+            'name',
+            'measurement_unit',
+        )
         model = Ingredient
 
 

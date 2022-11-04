@@ -5,7 +5,8 @@ from django.core.management.base import BaseCommand
 from recipes.models import Ingredient
 
 models_and_data = (
-    (Ingredient, '../../data/ingredients.csv'),
+    # (Ingredient, '../../data/ingredients.csv'),
+    (Ingredient, 'ingredients.csv'),
 )
 
 

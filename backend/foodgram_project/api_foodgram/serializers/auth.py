@@ -5,15 +5,6 @@ from djoser.conf import settings
 
 from users.models import Follow
 
-# from recipes.validators import (
-#     validate_forbidden_username,
-#     validate_unique_case_insensitive_username,
-#     validate_unique_case_insensitive_email,
-#     validate_unique_case_insensitive_first_name,
-#     validate_unique_case_insensitive_last_name
-# )
-
-
 User = get_user_model()
 
 
