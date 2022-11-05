@@ -1,7 +1,6 @@
-from django.db import models
-from django.contrib.auth import get_user_model
 from colorfield.fields import ColorField
-
+from django.contrib.auth import get_user_model
+from django.db import models
 from recipes.validators import validate_amount, validate_cooking_time
 
 User = get_user_model()

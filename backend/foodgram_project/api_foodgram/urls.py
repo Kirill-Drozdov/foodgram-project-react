@@ -1,7 +1,6 @@
+from api_foodgram.views import recipes, users
 from django.urls import include, path
 from rest_framework import routers
-
-from api_foodgram.views import recipes, users
 
 app_name = 'api_foodgram'
 

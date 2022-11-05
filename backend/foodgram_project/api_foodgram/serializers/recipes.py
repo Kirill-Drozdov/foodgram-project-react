@@ -1,17 +1,11 @@
 import base64
 
-from django.core.files.base import ContentFile
 from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
+from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                            ShoppingCart, Tag)
 from rest_framework import serializers
-
-from recipes.models import (Tag,
-                            Ingredient,
-                            Recipe,
-                            IngredientAmount,
-                            Favorite,
-                            ShoppingCart
-                            )
 # from shopping_cart.models import ShoppingCart
 from users.models import Follow
 

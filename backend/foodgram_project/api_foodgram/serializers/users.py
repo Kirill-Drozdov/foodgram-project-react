@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
-
 from recipes.models import Recipe
+from rest_framework import serializers
 from users.models import Follow
 
 User = get_user_model()
@@ -73,7 +72,7 @@ class FollowSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Подписываться на самого себя нельзя!'
             )
-        elif Follow.objects.filter(
+        if Follow.objects.filter(
             user=user,
             subscriber=subscriber
         ).exists():

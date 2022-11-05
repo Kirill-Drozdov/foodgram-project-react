@@ -30,7 +30,7 @@ def validate_forbidden_username(value):
 
 
 def validate_unique_case_insensitive_username(value):
-    """Независимо от регистра проверяет, что имя пользователя уникально."""
+    """Проверяет, что username пользователя уникально."""
     user_model = get_user_model()
     if user_model.objects.filter(username__iexact=value).exists():
         msg = gettext_lazy('A user with that username already exists.')
@@ -39,7 +39,7 @@ def validate_unique_case_insensitive_username(value):
 
 
 def validate_unique_case_insensitive_email(value):
-    """Независимо от регистра проверяет, что email пользователя уникален."""
+    """Проверяет, что email пользователя уникален."""
     user_model = get_user_model()
     if user_model.objects.filter(email__iexact=value).exists():
         msg = 'Пользователь с таким адресом электронной почты уже существует.'
@@ -48,7 +48,7 @@ def validate_unique_case_insensitive_email(value):
 
 
 def validate_unique_case_insensitive_first_name(value):
-    """Независимо от регистра проверяет, что first_name пользователя уникален."""
+    """Проверяет, что first_name пользователя уникален."""
     user_model = get_user_model()
     if user_model.objects.filter(first_name__iexact=value).exists():
         msg = 'Пользователь с таким именем уже существует.'
@@ -57,7 +57,7 @@ def validate_unique_case_insensitive_first_name(value):
 
 
 def validate_unique_case_insensitive_last_name(value):
-    """Независимо от регистра проверяет, что last_name пользователя уникален."""
+    """Проверяет, что last_name пользователя уникален."""
     user_model = get_user_model()
     if user_model.objects.filter(last_name__iexact=value).exists():
         msg = 'Пользователь с такой фамилией уже существует.'

@@ -1,11 +1,9 @@
-from django.shortcuts import get_object_or_404
+from api_foodgram.serializers.users import (FollowSerializer,
+                                            SubscriptionsSerializer)
 from django.contrib.auth import get_user_model
-from rest_framework import viewsets, status, mixins, generics
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, mixins, status, viewsets
 from rest_framework.response import Response
-
-from api_foodgram.serializers.users import (
-    FollowSerializer,
-    SubscriptionsSerializer)
 from users.models import Follow
 
 User = get_user_model()
@@ -42,9 +40,14 @@ class FollowAPIView(generics.CreateAPIView,
             serializer.save(
                 user=user,
                 subscriber=subscriber)
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            headers = self.get_success_headers(serializer.data)
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+                headers=headers
+            )
+        return Response(serializer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
         user = get_object_or_404(

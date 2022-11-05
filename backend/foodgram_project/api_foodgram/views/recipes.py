@@ -1,33 +1,22 @@
 from datetime import datetime as dt
 
-from django.shortcuts import get_object_or_404
+from api_foodgram.filters import RecipeFilter
+from api_foodgram.permissions import (IsAdminOrReadOnlyPermission,
+                                      IsStaffOrAuthorOrReadOnlyPermission)
+from api_foodgram.serializers.recipes import (FavoriteSerializer,
+                                              IngredientSerializer,
+                                              RecipeCreateSerializer,
+                                              RecipeSerializer,
+                                              ShoppingCartSerializer,
+                                              TagSerializer)
 from django.http import HttpResponse
-from rest_framework import viewsets, status, generics, filters
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
+                            ShoppingCart, Tag)
+from rest_framework import filters, generics, status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django_filters.rest_framework import DjangoFilterBackend
-
-from recipes.models import (
-    Tag,
-    Ingredient,
-    Recipe,
-    Favorite,
-    ShoppingCart,
-    IngredientAmount
-)
-from api_foodgram.serializers.recipes import (
-    TagSerializer,
-    IngredientSerializer,
-    RecipeSerializer,
-    RecipeCreateSerializer,
-    FavoriteSerializer,
-    ShoppingCartSerializer
-)
-from api_foodgram.permissions import (
-    IsStaffOrAuthorOrReadOnlyPermission,
-    IsAdminOrReadOnlyPermission
-)
-from api_foodgram.filters import RecipeFilter
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -116,9 +105,14 @@ class FavoriteAPIView(generics.CreateAPIView,
             serializer.save(
                 user=user,
                 recipe=recipe)
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            headers = self.get_success_headers(serializer.data)
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+                headers=headers
+            )
+        return Response(serializer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
         user = self.request.user
@@ -155,9 +149,14 @@ class ShoppingCartAPIView(generics.CreateAPIView,
             serializer.save(
                 user=user,
                 recipe=recipe)
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            headers = self.get_success_headers(serializer.data)
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+                headers=headers
+            )
+        return Response(serializer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
         user = self.request.user

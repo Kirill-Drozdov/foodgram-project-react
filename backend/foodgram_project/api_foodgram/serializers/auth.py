@@ -1,8 +1,7 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
-from djoser.serializers import UserCreateSerializer, UserSerializer
 from djoser.conf import settings
-
+from djoser.serializers import UserCreateSerializer, UserSerializer
+from rest_framework import serializers
 from users.models import Follow
 
 User = get_user_model()
