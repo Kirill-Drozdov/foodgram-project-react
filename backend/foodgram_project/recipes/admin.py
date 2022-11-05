@@ -6,7 +6,8 @@ from recipes.models import (
     IngredientAmount,
     Recipe,
     Favorite,
-    ShoppingCart)
+    ShoppingCart
+)
 
 
 @admin.register(Tag)

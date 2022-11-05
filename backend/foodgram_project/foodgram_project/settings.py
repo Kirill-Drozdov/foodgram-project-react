@@ -7,8 +7,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='38yt93ghrjngfkjgkejrghie49')
 
-DEBUG = False
-# DEBUG = True
+# DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     # os.getenv('HOST_A', default='*'),
@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
     'api_foodgram.apps.ApiFoodgramConfig',
+    # 'shopping_cart.apps.ShoppingCartConfig',
 ]
 
 MIDDLEWARE = [

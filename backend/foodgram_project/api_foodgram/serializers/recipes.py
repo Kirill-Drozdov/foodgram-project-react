@@ -10,7 +10,9 @@ from recipes.models import (Tag,
                             Recipe,
                             IngredientAmount,
                             Favorite,
-                            ShoppingCart)
+                            ShoppingCart
+                            )
+# from shopping_cart.models import ShoppingCart
 from users.models import Follow
 
 User = get_user_model()
