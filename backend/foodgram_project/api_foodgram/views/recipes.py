@@ -4,14 +4,10 @@ from api_foodgram.permissions import (IsAdminOrReadOnlyPermission,
 from api_foodgram.serializers.recipes import (FavoriteSerializer,
                                               IngredientSerializer,
                                               RecipeCreateSerializer,
-                                              RecipeSerializer,
-                                              TagSerializer)
+                                              RecipeSerializer, TagSerializer)
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from recipes.models import (Favorite,
-                            Ingredient,
-                            Recipe,
-                            Tag)
+from recipes.models import Favorite, Ingredient, Recipe, Tag
 from rest_framework import filters, generics, status, viewsets
 from rest_framework.response import Response
 

@@ -1,4 +1,4 @@
-from api_foodgram.views import recipes, users, shopping_cart
+from api_foodgram.views import recipes, shopping_cart, users
 from django.urls import include, path
 from rest_framework import routers
 

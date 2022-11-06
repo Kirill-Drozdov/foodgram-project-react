@@ -1,14 +1,13 @@
 from datetime import datetime as dt
 
-from django.shortcuts import get_object_or_404
+from api_foodgram.serializers.shopping_cart import ShoppingCartSerializer
 from django.http import HttpResponse
-from rest_framework import status, generics
+from django.shortcuts import get_object_or_404
+from recipes.models import IngredientAmount, Recipe
+from rest_framework import generics, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
-from recipes.models import Recipe, IngredientAmount
 from shopping_cart.models import ShoppingCart
-from api_foodgram.serializers.shopping_cart import ShoppingCartSerializer
 
 
 class ShoppingCartAPIView(generics.CreateAPIView,
@@ -31,9 +30,13 @@ class ShoppingCartAPIView(generics.CreateAPIView,
             serializer.save(
                 user=user,
                 recipe=recipe)
-        else:
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+            headers = self.get_success_headers(serializer.data)
+            return Response(
+                serializer.data,
+                status=status.HTTP_201_CREATED,
+                headers=headers)
+        return Response(serializer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
         user = self.request.user
