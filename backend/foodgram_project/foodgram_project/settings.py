@@ -8,12 +8,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='38yt93ghrjngfkjgkejrghie49')
 
-# DEBUG = False
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    # os.getenv('HOST_A', default='*'),
-    '*'
+    os.getenv('HOST_A', default='*'),
 ]
 
 INSTALLED_APPS = [
@@ -32,7 +30,7 @@ INSTALLED_APPS = [
     'recipes.apps.RecipesConfig',
     'users.apps.UsersConfig',
     'api_foodgram.apps.ApiFoodgramConfig',
-    # 'shopping_cart.apps.ShoppingCartConfig',
+    'shopping_cart.apps.ShoppingCartConfig',
 ]
 
 MIDDLEWARE = [
@@ -77,13 +75,6 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -122,7 +113,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        # 'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -135,12 +125,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 6,
     'SEARCH_PARAM': 'name',
 }
-
-# SEARCH_PARAM = 'name'
-
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost',
-# ]
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'

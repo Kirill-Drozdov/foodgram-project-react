@@ -4,9 +4,9 @@ from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from recipes.models import (Favorite, Ingredient, IngredientAmount, Recipe,
-                            ShoppingCart, Tag)
+                            Tag)
 from rest_framework import serializers
-# from shopping_cart.models import ShoppingCart
+from shopping_cart.models import ShoppingCart
 from users.models import Follow
 
 User = get_user_model()
@@ -209,7 +209,6 @@ class RecipeSerializer(serializers.ModelSerializer):
 class FavoriteSerializer(serializers.ModelSerializer):
     id = serializers.SerializerMethodField()
     name = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
     cooking_time = serializers.SerializerMethodField()
 
     def validate(self, data):
@@ -231,7 +230,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
-            'image',
             'cooking_time'
         )
 
@@ -240,53 +238,6 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
     def get_name(self, obj):
         return self.recipe_obj.name
-
-    def get_image(self, obj):
-        # return self.recipe_obj.image
-        return None
-
-    def get_cooking_time(self, obj):
-        return self.recipe_obj.cooking_time
-
-
-class ShoppingCartSerializer(serializers.ModelSerializer):
-    id = serializers.SerializerMethodField()
-    name = serializers.SerializerMethodField()
-    image = serializers.SerializerMethodField()
-    cooking_time = serializers.SerializerMethodField()
-
-    def validate(self, data):
-        pk = self.context.get('view').kwargs.get('pk')
-        recipe = get_object_or_404(Recipe, pk=pk)
-        self.recipe_obj = recipe
-        user = self.context['request'].user
-        if ShoppingCart.objects.filter(
-            user=user,
-            recipe=recipe
-        ).exists():
-            raise serializers.ValidationError(
-                f'Рецепт {recipe.name} уже в списке покупок!'
-            )
-        return data
-
-    class Meta:
-        model = ShoppingCart
-        fields = (
-            'id',
-            'name',
-            'image',
-            'cooking_time'
-        )
-
-    def get_id(self, obj):
-        return self.recipe_obj.pk
-
-    def get_name(self, obj):
-        return self.recipe_obj.name
-
-    def get_image(self, obj):
-        # return self.recipe_obj.image
-        return None
 
     def get_cooking_time(self, obj):
         return self.recipe_obj.cooking_time

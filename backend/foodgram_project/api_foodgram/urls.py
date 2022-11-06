@@ -1,4 +1,4 @@
-from api_foodgram.views import recipes, users
+from api_foodgram.views import recipes, users, shopping_cart
 from django.urls import include, path
 from rest_framework import routers
 
@@ -28,7 +28,7 @@ router.register(
 
 urlpatterns = [
     path('recipes/download_shopping_cart/',
-         recipes.download_shopping_cart,
+         shopping_cart.download_shopping_cart,
          name='download_shopping_cart'
          ),
     path('', include(router.urls)),
@@ -41,6 +41,6 @@ urlpatterns = [
          recipes.FavoriteAPIView.as_view(),
          name='favorite'),
     path('recipes/<int:pk>/shopping_cart/',
-         recipes.ShoppingCartAPIView.as_view(),
+         shopping_cart.ShoppingCartAPIView.as_view(),
          name='shopping_cart'),
 ]
