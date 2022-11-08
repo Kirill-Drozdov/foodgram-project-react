@@ -79,7 +79,7 @@ class Base64ImageField(serializers.ImageField):
 class RecipeCreateSerializer(serializers.ModelSerializer):
     author = AuthorFieldSerializer(read_only=True)
     ingredients = IngredientFieldSerializer(many=True, required=True)
-    image = Base64ImageField(required=True, allow_null=False)
+    image = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         fields = (
@@ -93,6 +93,41 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
             'image',
         )
         model = Recipe
+
+    def validate(self, data):
+        ingredients = self.initial_data.get('ingredients')
+        unique_ingr = []
+        for ingredient in ingredients:
+            name = ingredient.get('ingredient')
+            if name in unique_ingr:
+                raise serializers.ValidationError(
+                    'Ингредиенты не должны дублироваться!'
+                )
+            unique_ingr.append(name)
+        return data
+
+    # Использование метода validate_ingredients считаю более
+    # правильным, так как
+    # в value хранятся данные, которые уже прошли предварительную проверку,
+    # но...
+    # в таком случае пользователь не получит всплывающее окно с сообщением, что
+    # ингредиенты дублируются, хотя в DevTools будет прилетать 400BadRequest с
+    # подробностями ошибки, а рецепт создать будет нельзя.
+    # Наставник сказал, что с точки зрения бекенда работа тут выполнена,
+    # исключение обрабатывается должным образом.
+    # Рабочим вариантом пока решил оставить просто метод validate.
+
+    # def validate_ingredients(self, value):
+    #     ingredients = value
+    #     unique_ingr = []
+    #     for ingredient in ingredients:
+    #         name = ingredient.get('ingredient')
+    #         if name in unique_ingr:
+    #             raise serializers.ValidationError(
+    #                 f'{name} - ингредиент дублируется!'
+    #             )
+    #         unique_ingr.append(name)
+    #     return value
 
     def create(self, validated_data):
         ingredients = validated_data.pop('ingredients')
@@ -122,8 +157,9 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         instance.text = validated_data.get('text', instance.text)
         instance.cooking_time = validated_data.get(
             'cooking_time', instance.cooking_time)
-        instance.image = validated_data.get('image', instance.image)
-
+        if validated_data.get('image', False):
+            instance.image = validated_data.get('image', instance.image)
+        instance.image = instance.image
         instance.tags.clear()
         instance.ingredients.clear()
 

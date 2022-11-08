@@ -90,19 +90,18 @@ class Recipe(models.Model):
         IngredientAmount,
         related_name='recipes',
         verbose_name='Ингредиенты',
-
     )
     text = models.TextField(
-        'Описание'
+        'Описание',
     )
     cooking_time = models.IntegerField(
         'Время приготовления(в минутах)',
-        validators=[validate_cooking_time]
+        validators=[validate_cooking_time],
+        blank=True
     )
     image = models.ImageField(
         'Картинка',
         upload_to='recipes/images/',
-        blank=True
     )
     pub_date = models.DateTimeField(
         'Дата публикации',
