@@ -98,12 +98,12 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         ingredients = self.initial_data.get('ingredients')
         unique_ingr = []
         for ingredient in ingredients:
-            name = ingredient.get('ingredient')
-            if name in unique_ingr:
+            id = ingredient.get('id')
+            if id in unique_ingr:
                 raise serializers.ValidationError(
                     'Ингредиенты не должны дублироваться!'
                 )
-            unique_ingr.append(name)
+            unique_ingr.append(id)
         return data
 
     # Использование метода validate_ingredients считаю более

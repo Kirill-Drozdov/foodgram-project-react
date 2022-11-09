@@ -8,12 +8,6 @@ RUN pip3 install -r /app/requirements.txt --no-cache-dir
 
 COPY foodgram_project/ /app
 
-# RUN cd ..
-
-# COPY data/ /app
-
-# RUN cd app
-
 WORKDIR /app
 
 CMD ["gunicorn", "foodgram_project.wsgi:application", "--bind", "0:8000" ]

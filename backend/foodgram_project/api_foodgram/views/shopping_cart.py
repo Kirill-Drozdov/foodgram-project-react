@@ -9,6 +9,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from shopping_cart.models import ShoppingCart
 
+# from xhtml2pdf import pisa
+
 
 class ShoppingCartAPIView(generics.CreateAPIView,
                           generics.DestroyAPIView):
@@ -93,3 +95,34 @@ def download_shopping_cart(request):
               ]
     response.writelines(footer)
     return response
+
+
+# Вывод списка в pdf пока в разработке. Обязательным заданием для
+# проекта это не является, но хочется попробовать сделать.
+# Проект может быть принят и без pdf по ТЗ.
+
+# @api_view(['GET', ])
+# def download_shopping_cart(request):
+#     user = request.user
+#     if not user.is_authenticated:
+#         return Response(status=status.HTTP_401_UNAUTHORIZED)
+#     recipes = Recipe.objects.filter(
+#         shopping_cart__user=user
+#     )
+#     # template_path = 'pdf.html'
+
+#     # Create a Django response object, and specify content_type as pdf
+#     response = HttpResponse(content_type='application/pdf')
+#     response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+#     # find the template and render it.
+#     template = 'pdf.html'
+#     context = {'shop_list': recipes}
+#     html = render(request, template, context)
+
+#     # create a pdf
+#     pisa_status = pisa.CreatePDF(
+#         html, dest=response)
+#     # if error then show some funny view
+#     if pisa_status.err:
+#         return HttpResponse('We had some errors <pre>' + html + '</pre>')
+#     return response

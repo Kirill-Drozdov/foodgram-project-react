@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;"/>
+    <style>
+        @font-face {
+            font-family: "Alice-Regular";
+            src: url("/fonts/Alice-Regular.ttf") format("truetype");
+        }
+        body {
+            font-family: "Alice-Regular", serif;
+            font-size: 20px
+        }
+    </style>
+</head>
+<body>
+{% for recipe in recipes_in_shopping_cart %}
+    <p>{{ recipe.name }}</p>
+{% endfor %}
+</body>
+</html>
